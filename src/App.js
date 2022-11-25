@@ -22,19 +22,33 @@ function App() {
   };
 
   const addItem = (title, description) => {
-    if (items.includes(title)) return;
     setItems((todo) => [{ title, description, done: false }, ...todo]);
   };
 
-  const completeItem = (item) => {
-    console.log(item);
+  const completeItem = (selectedItem) => {
+    setItems((prevItems) => {
+      const newItems = [...prevItems];
+      newItems.splice(newItems.indexOf(selectedItem), 1);
+      newItems.push({ ...selectedItem, done: !selectedItem.done });
+      return newItems;
+    });
   };
 
   return (
     <div>
       <form className={styles.todoForm} onSubmit={handleSubmit}>
-        <input ref={todosTitleRef} name="todoTitle" type="text" />
-        <input ref={todosDescriptionRef} name="todoDescription" type="text" />
+        <input
+          placeholder="title"
+          ref={todosTitleRef}
+          name="todoTitle"
+          type="text"
+        />
+        <input
+          placeholder="description"
+          ref={todosDescriptionRef}
+          name="todoDescription"
+          type="text"
+        />
         <input type="submit" />
       </form>
       <TodoItems completeItem={completeItem} items={items} />
