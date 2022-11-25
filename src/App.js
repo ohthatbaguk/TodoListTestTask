@@ -34,8 +34,13 @@ function App() {
     });
   };
 
+  const deleteItem = (selectedItem) => {
+    setItems((todos) => todos.filter((item) => item !== selectedItem));
+  };
+
   return (
     <div>
+      <h3>TODO List</h3>
       <form className={styles.todoForm} onSubmit={handleSubmit}>
         <input
           placeholder="title"
@@ -51,7 +56,11 @@ function App() {
         />
         <input type="submit" />
       </form>
-      <TodoItems completeItem={completeItem} items={items} />
+      <TodoItems
+        deleteItem={deleteItem}
+        completeItem={completeItem}
+        items={items}
+      />
     </div>
   );
 }
