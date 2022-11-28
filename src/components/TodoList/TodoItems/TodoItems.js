@@ -1,7 +1,12 @@
-import styles from "./todoItem.module.less";
-import TodoItem from "./TodoItem/TodoItem";
+import styles from "../TodoItem/todoItem.module.less";
+import TodoItem from "../TodoItem/TodoItem";
 
-export default function TodoItems({ items, completeItem, deleteItem }) {
+export default function TodoItems({
+  items,
+  completeItem,
+  deleteItem,
+  editItem,
+}) {
   const viewItems = [
     ...items.filter((item) => !item.done),
     ...items.filter((item) => item.done),
@@ -15,6 +20,7 @@ export default function TodoItems({ items, completeItem, deleteItem }) {
           item={item}
           completeItem={completeItem}
           deleteItem={deleteItem}
+          editItem={editItem}
         />
       ))}
     </ul>
