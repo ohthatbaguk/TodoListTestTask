@@ -1,4 +1,5 @@
 import styles from "./todoItem.module.less";
+import TodoItem from "./TodoItem/TodoItem";
 
 export default function TodoItems({ items, completeItem, deleteItem }) {
   const viewItems = [
@@ -9,12 +10,12 @@ export default function TodoItems({ items, completeItem, deleteItem }) {
   return (
     <ul className={styles.list}>
       {viewItems?.map((item) => (
-        <li className={item.done ? styles.done : null} key={item.title}>
-          <span onClick={() => completeItem(item)}>{item.title}</span>
-          <button onClick={() => deleteItem(item)} className={styles.button}>
-            delete
-          </button>
-        </li>
+        <TodoItem
+          key={item.title}
+          item={item}
+          completeItem={completeItem}
+          deleteItem={deleteItem}
+        />
       ))}
     </ul>
   );
