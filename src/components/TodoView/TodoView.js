@@ -12,7 +12,7 @@ export default function TodoView({ item, deleteItem, completeItem, goEdit }) {
     <li className={item.done ? styles.done : null}>
       <input
         type="checkbox"
-        checked={item.done}
+        checked={item.done ?? false}
         onChange={() => completeItem(item)}
       />
       <div>
@@ -22,6 +22,11 @@ export default function TodoView({ item, deleteItem, completeItem, goEdit }) {
           <p className={isExpired ? styles.date : styles.expired}>
             {dateFormat}
           </p>
+        )}
+        {!!item.fileMeta && (
+          <a target="_blank" href={item.fileMeta.url}>
+            {item.fileMeta.name}
+          </a>
         )}
       </div>
       <button onClick={goEdit}>edit</button>

@@ -20,8 +20,8 @@ export default function useTodosItems() {
     return unsubscribe;
   }, []);
 
-  const addItem = ({ title, description, date }) => {
-    Storage.addTodo({ title, description, date, done: false });
+  const addItem = (item) => {
+    Storage.addTodo({ ...item, done: false });
   };
 
   const completeItem = (selectedItem) => {
@@ -35,7 +35,14 @@ export default function useTodosItems() {
     return Storage.deleteTodo(selectedItem);
   };
 
-  const editItem = (newItem, item) => {
+  const editItem = async (newItem, item) => {
+    if (
+      item.fileMeta?.url !== newItem.fileMeta?.url &&
+      newItem.fileMeta?.url &&
+      item.fileMeta?.url
+    ) {
+      await Storage.deleteFile(item.fileMeta.name);
+    }
     return Storage.editTodo(item.id, newItem);
   };
 

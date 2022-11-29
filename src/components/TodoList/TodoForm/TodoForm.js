@@ -1,11 +1,19 @@
 import styles from "../../../app.module.less";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import dayjs from "dayjs";
+import Storage from "../../../firebase";
 
 export default function TodoForm({ onSubmit, item = null }) {
   const [title, setTitle] = useState(item?.title ?? "");
   const [description, setDescription] = useState(item?.description ?? "");
-  const [date, setDate] = useState(item?.date ?? ""); // YYYY-MM-DD
+  const [date, setDate] = useState(item?.date ?? "");
+  const [predefinedFile, setPredefinedFile] = useState(item?.fileMeta);
+  const fileRef = useRef();
+
+  const clearFile = (event) => {
+    event.preventDefault();
+    setPredefinedFile(null);
+  };
 
   const handleChangeTitle = (event) => {
     setTitle(event.target.value);
@@ -23,11 +31,24 @@ export default function TodoForm({ onSubmit, item = null }) {
     setTitle("");
     setDescription("");
     setDate("");
+    fileRef.current.value = "";
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    onSubmit({ title, description, date: date ? dayjs(date).valueOf() : null });
+    const formData = new FormData(event.target);
+    const file = formData.get("file");
+    let fileMeta = predefinedFile;
+    if (file) {
+      fileMeta = await Storage.uploadFile(file);
+    }
+
+    onSubmit({
+      title,
+      description,
+      date: date ? dayjs(date).valueOf() : null,
+      fileMeta,
+    });
     clearForm();
   };
 
@@ -48,6 +69,14 @@ export default function TodoForm({ onSubmit, item = null }) {
         name="todoDescription"
         type="text"
       />
+      {predefinedFile ? (
+        <div>
+          <a href={predefinedFile.url}>{predefinedFile.name}</a>
+          <button onClick={clearFile}>Clear</button>
+        </div>
+      ) : (
+        <input type="file" multiple name="file" ref={fileRef} />
+      )}
       <input
         value={date ? dayjs(date).format("YYYY-MM-DD") : ""}
         onChange={handleChangeDate}

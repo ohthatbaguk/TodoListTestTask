@@ -8,6 +8,13 @@ import {
   child,
   push,
 } from "firebase/database";
+import {
+  getStorage,
+  uploadBytes,
+  ref as storageRef,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDcQNMatoumyCMgHQk1Al4jB0SKXBzHm0w",
@@ -24,13 +31,30 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+const storage = getStorage(app);
+
 const Storage = {
+  async uploadFile(file) {
+    const image = storageRef(storage, file.name);
+    const meta = await uploadBytes(image, file);
+    const downloadUrl = await getDownloadURL(meta.ref);
+    return { name: meta.ref.name, url: downloadUrl };
+  },
+
+  deleteFile(name) {
+    const desertRef = storageRef(storage, name);
+    return deleteObject(desertRef);
+  },
+
   addTodo(item) {
     return push(ref(db, "todos"), item);
   },
 
-  deleteTodo(item) {
-    return remove(ref(db, `todos/${item.id}`));
+  async deleteTodo(item) {
+    await remove(ref(db, `todos/${item.id}`));
+    if (item.fileMeta) {
+      await this.deleteFile(item.fileMeta.name);
+    }
   },
 
   editTodo(id, item) {

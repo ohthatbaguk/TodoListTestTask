@@ -13,7 +13,9 @@ export default function TodoItem({ item, completeItem, deleteItem, editItem }) {
     setIsEdit(false);
   };
   return isEdit ? (
-    <TodoForm item={item} onSubmit={onEditSubmit} />
+    <li>
+      <TodoForm item={item} onSubmit={onEditSubmit} />
+    </li>
   ) : (
     <TodoView
       goEdit={goEdit}
